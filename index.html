@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>挪车服务</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="car-icon">🚗</div>
+            <h1>临时驻车，电联即走！</h1>
+            <p>扫码联系车主，安全便捷</p>
+        </div>
+        
+        <div class="content">
+            <div class="contact-card">
+                <div class="card-header">
+                    <h2>挪车电话如下：</h2>
+                </div>
+                
+                <div class="phone-number" id="phoneDisplay">
+                    请扫描二维码
+                </div>
+                
+                <div class="action-section">
+                    <button class="call-button" onclick="callNumber()">
+                        <span class="button-icon">📞</span>
+                        拨打电话
+                    </button>
+                </div>
+                
+                <div class="footer-note">
+                    <p>扫码后可直接拨打车主电话</p>
+                    <p>服务有效期15年</p>
+                </div>
+            </div>
+            
+            <!-- 新增短信功能区块 -->
+            <div class="contact-card">
+                <div class="card-header">
+                    <h2>发送短信提醒：</h2>
+                </div>
+                
+                <div class="sms-info">
+                    <p>通过短信联系车主挪车</p>
+                </div>
+                
+                <div class="action-section">
+                    <button class="call-button sms-button" onclick="sendSMS()">
+                        <span class="button-icon">💬</span>
+                        发送短信
+                    </button>
+                </div>
+                
+                <div class="footer-note">
+                    <p>点击按钮发送短信给车主</p>
+                    <p>车主会收到挪车请求短信</p>
+                </div>
+            </div>
+            
+            <div class="decoration">
+                <div class="decoration-item">🚙</div>
+                <div class="decoration-item">🚘</div>
+                <div class="decoration-item">🚗</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // 发送短信功能
+        function sendSMS() {
+            try {
+                const phoneDisplay = document.getElementById('phoneDisplay');
+                const realPhone = phoneDisplay.dataset.realPhone;
+                
+                if (realPhone && validatePhoneNumber(realPhone)) {
+                    // 构造短信内容
+                    const message = encodeURIComponent('您好，您的车辆挡住了我的通行，请您尽快挪车。');
+                    
+                    // 使用sms:协议发送短信
+                    window.location.href = `sms:${realPhone}?body=${message}`;
+                } else {
+                    showError('无法获取有效的电话号码');
+                }
+            } catch (error) {
+                console.error('发送短信时出错:', error);
+                showError('发送短信失败，请稍后重试');
+            }
+        }
+        
+        // 为短信按钮添加交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const smsButton = document.querySelector('.sms-button');
+            if (smsButton) {
+                smsButton.addEventListener('mousedown', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                smsButton.addEventListener('mouseup', function() {
+                    this.style.transform = '';
+                });
+                
+                smsButton.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                smsButton.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

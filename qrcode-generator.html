@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>挪车二维码生成器</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // 确保 QRCode 库已加载
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof QRCode === 'undefined') {
+                console.error('QRCode library not loaded');
+                showError('二维码生成库加载失败，请检查网络连接后刷新页面');
+                return;
+            }
+            
+            // 其他初始化代码...
+        });
+    </script>
+    
+    <script>
+        // 监控脚本加载错误
+        window.addEventListener('error', function(e) {
+            if (e.target.tagName === 'SCRIPT' && e.target.src.includes('qrcode')) {
+                console.error('Failed to load QRCode library:', e);
+                document.addEventListener('DOMContentLoaded', function() {
+                    showError('二维码生成库加载失败，请刷新页面重试');
+                });
+            }
+        }, true);
+    </script>
+    <!-- 引入qrcode.js库 -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="car-icon">🚗</div>
+            <h1>挪车二维码生成器</h1>
+            <p>输入手机号，自动生成挪车二维码</p>
+        </div>
+        
+        <div class="content">
+            <div class="contact-card">
+                <div class="card-header">
+                    <h2>生成您的挪车二维码</h2>
+                </div>
+                
+                <div class="input-section">
+                    <label for="phoneInput" style="display: block; margin-bottom: 10px; font-weight: 600; color: #495057;">
+                        输入您的手机号码：
+                    </label>
+                    <input type="tel" 
+                           id="phoneInput" 
+                           placeholder="请输入11位手机号" 
+                           maxlength="11"
+                           style="width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 1.1em; margin-bottom: 20px;">
+                </div>
+                
+                <div id="qrcode-container" style="text-align: center; display: none;">
+                    <h3 style="margin-bottom: 15px; color: #495057;">您的挪车二维码</h3>
+                    <div id="qrcode" style="padding: 15px; background: white; display: inline-block; border-radius: 10px;"></div>
+                    <p style="margin-top: 15px; font-size: 0.9em; color: #6c757d;">
+                        扫描二维码可联系您挪车
+                    </p>
+                </div>
+                
+                <div class="footer-note">
+                    <p>使用说明：</p>
+                    <p>1. 输入正确的手机号码</p>
+                    <p>2. 二维码将自动生成</p>
+                    <p>3. 截图保存二维码</p>
+                </div>
+            </div>
+            
+            <div class="decoration">
+                <div class="decoration-item">📱</div>
+                <div class="decoration-item">🔍</div>
+                <div class="decoration-item">📷</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 验证手机号码格式
+        function validatePhoneNumber(phone) {
+            if (!phone || typeof phone !== 'string') {
+                return false;
+            }
+            
+            // 简单的手机号验证（中国手机号）
+            const phoneRegex = /^1[3-9]\d{9}$/;
+            return phoneRegex.test(phone);
+        }
+        
+        // 显示错误信息
+        function showError(message) {
+            // 创建或显示错误消息元素
+            let errorElement = document.getElementById('errorMessage');
+            if (!errorElement) {
+                errorElement = document.createElement('div');
+                errorElement.id = 'errorMessage';
+                errorElement.className = 'error-message';
+                document.querySelector('.contact-card').prepend(errorElement);
+            }
+            
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            // 3秒后自动隐藏错误信息
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 生成二维码 - 修正后的版本
+        function generateQRCode() {
+            const phoneInput = document.getElementById('phoneInput');
+            const phoneNumber = phoneInput.value.trim();
+            
+            // 验证手机号码
+            if (!validatePhoneNumber(phoneNumber)) {
+                showError('请输入有效的11位手机号码');
+                return;
+            }
+            
+            // 构造URL
+            const baseUrl = window.location.href.split('?')[0].replace('generator.html', 'index.html');
+            const fullUrl = `${baseUrl}?phone=${encodeURIComponent(phoneNumber)}`;
+            
+            // 清空前一个二维码
+            const qrCodeContainer = document.getElementById('qrcode');
+            qrCodeContainer.innerHTML = '';
+            
+            // 创建新的canvas元素
+            const canvas = document.createElement('canvas');
+            qrCodeContainer.appendChild(canvas);
+            
+            // 生成二维码
+            QRCode.toCanvas(canvas, fullUrl, {
+                width: 200,
+                height: 200,
+                margin: 2,
+                color: {
+                    dark: '#000000',
+                    light: '#ffffff'
+                }
+            }, function (error) {
+                if (error) {
+                    console.error('生成二维码失败:', error);
+                    showError('生成二维码失败，请重试');
+                } else {
+                    // 显示二维码容器
+                    document.getElementById('qrcode-container').style.display = 'block';
+                }
+            });
+        }
+        
+        // 页面加载完成后添加事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查 QRCode 库是否加载成功
+            if (typeof QRCode === 'undefined') {
+                console.error('QRCode library not loaded');
+                showError('二维码生成库加载失败，请检查网络连接后刷新页面');
+                return;
+            }
+            
+            const phoneInput = document.getElementById('phoneInput');
+            
+            // 监听输入事件，自动触发二维码生成
+            phoneInput.addEventListener('input', function() {
+                // 限制只能输入数字
+                this.value = this.value.replace(/\D/g, '');
+                
+                // 如果输入了11位数字，则自动生成二维码
+                if (this.value.length === 11) {
+                    generateQRCode();
+                } else {
+                    // 如果输入不足11位，隐藏二维码
+                    document.getElementById('qrcode-container').style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
