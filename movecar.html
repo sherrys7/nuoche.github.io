@@ -28,6 +28,17 @@
       overflow: hidden;
     }
     
+    .car-icon {
+    font-size: 3.5em;
+    margin-bottom: 15px;
+    animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    }
+    
     .header {
       background: linear-gradient(45deg, #ff6b6b, #ee5a24);
       color: white;
@@ -267,15 +278,17 @@
       .sentence-content {
         font-size: 1rem;
       }
+      
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>便民挪车服务</h1>
-      <p>扫码联系车主</p>
-    </div>
+      <div class="car-icon">🚗</div>
+      <h1>临时驻车，电联即走！</h1>
+      <p>扫码联系车主，安全便捷</p>
+  </div>
     
     <div class="car-info">
       <div class="license-plate">苏J·*****</div>
