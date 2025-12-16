@@ -159,6 +159,14 @@
       color: #6c757d;
     }
     
+    .source {
+      text-align: right;
+      margin-top: 10px;
+      font-style: italic;
+      color: #495057;
+      font-size: 0.9rem;
+    }
+    
     .joke-item:last-child, .sentence-item:last-child {
       margin-bottom: 0;
     }
@@ -270,7 +278,7 @@
     </div>
     
     <div class="car-info">
-      <div class="license-plate">苏J·*****</div>
+      <div class="license-plate">宁A·9***H</div>
       <div class="message">
         很抱歉给您带来不便<br>
         请通过以下方式通知挪车，谢谢！
@@ -453,16 +461,19 @@
             let sentenceText = '';
             let authorText = '';
             let sentenceType = '';
+            let fromText = ''; // 来源信息
             
             // 根据返回的数据结构提取字段
             if (data.data && data.data.hitokoto) {
               sentenceText = data.data.hitokoto;
               authorText = data.data.from_who || '';
               sentenceType = data.data.type || '';
+              fromText = data.data.from || ''; // 提取来源信息
             } else if (data.hitokoto) {
               sentenceText = data.hitokoto;
               authorText = data.from_who || '';
               sentenceType = data.type || '';
+              fromText = data.from || ''; // 提取来源信息
             } else {
               sentenceText = result;
             }
@@ -475,6 +486,11 @@
               html += `<div class="author">—— ${authorText}</div>`;
             } else {
               html += `<div class="author">—— 匿名</div>`;
+            }
+            
+            // 添加来源信息显示
+            if (fromText) {
+              html += `<div class="source">出处: ${fromText}</div>`;
             }
             
             html += `</div>`;
@@ -513,5 +529,4 @@
     });
   </script>
 </body>
-
 </html>
