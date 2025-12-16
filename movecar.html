@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>便民挪车服务</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'PingFang SC', '微软雅黑', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    .car-info {
+      text-align: center;
+      padding: 30px 20px;
+    }
+    
+    .license-plate {
+      display: inline-block;
+      background: linear-gradient(45deg, #4ecdc4, #44a08d);
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      padding: 15px 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+    }
+    
+    .message {
+      color: #666;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+    
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding: 0 20px 30px;
+    }
+    
+    .action-btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 15px 20px;
+      border-radius: 50px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .call-btn {
+      background: linear-gradient(45deg, #2ecc71, #27ae60);
+      color: white;
+    }
+    
+    .sms-btn {
+      background: linear-gradient(45deg, #3498db, #2980b9);
+      color: white;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .action-btn:active {
+      transform: translateY(-1px);
+    }
+    
+    .joke-section, .sentence-section {
+      background: #f8f9fa;
+      padding: 30px 20px;
+      border-top: 1px solid #eee;
+    }
+    
+    .section-title {
+      text-align: center;
+      color: #333;
+      font-size: 20px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      margin: 10px auto;
+      border-radius: 2px;
+    }
+    
+    .joke-type, .sentence-type {
+      text-align: center;
+      color: #ff6b6b;
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    
+    .joke-item, .sentence-item {
+      background: white;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      border-left: 4px solid #4ecdc4;
+    }
+    
+    .sentence-content {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: #495057;
+      text-align: center;
+    }
+    
+    .author {
+      text-align: right;
+      margin-top: 15px;
+      font-style: italic;
+      color: #6c757d;
+    }
+    
+    .joke-item:last-child, .sentence-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+    
+    .error {
+      color: #e74c3c;
+    }
+    
+    .refresh-btn {
+      display: block;
+      width: 80%;
+      margin: 20px auto;
+      padding: 12px;
+      background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .refresh-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #6c757d;
+      background: #e9ecef;
+      transition: all 0.3s ease;
+    }
+    
+    .tab:first-child {
+      border-radius: 10px 0 0 0;
+    }
+    
+    .tab:last-child {
+      border-radius: 0 10px 0 0;
+    }
+    
+    .tab.active {
+      background: #f8f9fa;
+      color: #ff6b6b;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #999;
+      font-size: 14px;
+      background: #f8f9fa;
+      border-top: 1px solid #eee;
+    }
+    
+    @media (max-width: 480px) {
+      .actions {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .action-btn {
+        width: 80%;
+      }
+      
+      .license-plate {
+        font-size: 24px;
+        padding: 12px 25px;
+      }
+      
+      .sentence-content {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>便民挪车服务</h1>
+      <p>扫码联系车主</p>
+    </div>
+    
+    <div class="car-info">
+      <div class="license-plate">宁A·9***H</div>
+      <div class="message">
+        很抱歉给您带来不便<br>
+        请通过以下方式通知挪车，谢谢！
+      </div>
+    </div>
+    
+    <div class="actions">
+      <a class="action-btn call-btn" href="tel:19974825173">
+        📞 电话通知
+      </a>
+      <a class="action-btn sms-btn" href="sms:19974825173;?&body=你好，车辆被挡，请尽快挪车，谢谢！">
+        💬 短信通知
+      </a>
+    </div>
+    
+    <div class="tabs">
+      <div class="tab active" data-tab="joke">笑话</div>
+      <div class="tab" data-tab="sentence">句子</div>
+    </div>
+    
+    <div class="tab-content active" id="joke-tab">
+      <div class="joke-section">
+        <div class="section-title">候车一刻，开心一笑</div>
+        <div id="joke-type" class="joke-type">类型: 未知</div>
+        <div id="joke-container">
+          <div class="loading">正在加载笑话...</div>
+        </div>
+        <button id="refresh-joke" class="refresh-btn">🎲 换个笑话</button>
+      </div>
+    </div>
+    
+    <div class="tab-content" id="sentence-tab">
+      <div class="sentence-section">
+        <div class="section-title">每日一句，感悟人生</div>
+        <div id="sentence-type" class="sentence-type">类型: 未知</div>
+        <div id="sentence-container">
+          <div class="loading">正在加载句子...</div>
+        </div>
+        <button id="refresh-sentence" class="refresh-btn">🌟 换个句子</button>
+      </div>
+    </div>
+    
+    <div class="footer">
+      © 便民服务 | 文明出行 从我做起
+    </div>
+  </div>
+
+  <script>
+    // 类型映射
+    const typeMap = {
+      'a': '动画',
+      'b': '漫画',
+      'c': '游戏',
+      'd': '文学',
+      'e': '原创',
+      'f': '网络',
+      'g': '其他',
+      'h': '影视',
+      'i': '诗词',
+      'j': '网易云',
+      'k': '哲学',
+      'l': '抖机灵'
+    };
+    
+    // DOM元素
+    const jokeContainer = document.getElementById('joke-container');
+    const jokeTypeEl = document.getElementById('joke-type');
+    const refreshJokeBtn = document.getElementById('refresh-joke');
+    
+    const sentenceContainer = document.getElementById('sentence-container');
+    const sentenceTypeEl = document.getElementById('sentence-type');
+    const refreshSentenceBtn = document.getElementById('refresh-sentence');
+    
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    // 切换标签页
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabId = tab.getAttribute('data-tab');
+        
+        // 更新标签页激活状态
+        tabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(`${tabId}-tab`).classList.add('active');
+      });
+    });
+    
+    // 更新笑话类型信息
+    function updateJokeType(type) {
+      jokeTypeEl.textContent = `类型: ${type || '未知'}`;
+    }
+    
+    // 更新句子类型信息
+    function updateSentenceType(type) {
+      const typeName = typeMap[type] || '未知';
+      sentenceTypeEl.textContent = `类型: ${typeName}`;
+    }
+    
+    // 获取笑话内容并更新页面
+    function fetchJokes() {
+      // 显示加载状态
+      jokeContainer.innerHTML = '<div class="loading">正在加载笑话...</div>';
+      jokeContainer.classList.remove('error');
+      
+      var requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+      };
+      
+      fetch("https://api.timelessq.com/joke", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+          try {
+            // 尝试解析JSON响应
+            const data = JSON.parse(result);
+            let jokeText = '';
+            let jokeType = '';
+            
+            // 根据返回的数据结构提取content字段和type字段
+            if (data.data && data.data.content) {
+              jokeText = data.data.content;
+              jokeType = data.data.type || '';
+            } else if (data.content) {
+              jokeText = data.content;
+              jokeType = data.type || '';
+            } else {
+              jokeText = result;
+            }
+            
+            if (jokeText) {
+              jokeContainer.innerHTML = `
+                <div class="joke-item">
+                  ${jokeText}
+                </div>
+              `;
+            } else {
+              jokeContainer.innerHTML = '<div class="joke-item">暂时没有笑话了，稍后再试~</div>';
+            }
+            
+            // 更新类型信息
+            updateJokeType(jokeType);
+          } catch (e) {
+            // 如果不是JSON格式，则直接显示文本内容
+            jokeContainer.innerHTML = `
+              <div class="joke-item">
+                ${result}
+              </div>
+            `;
+            
+            // 更新类型信息
+            updateJokeType('未知');
+          }
+        })
+        .catch(error => {
+          console.log('获取笑话失败:', error);
+          jokeContainer.innerHTML = '<div class="joke-item error">获取笑话失败，请稍后再试~</div>';
+        });
+    }
+    
+    // 获取句子内容并更新页面
+    function fetchSentence() {
+      // 显示加载状态
+      sentenceContainer.innerHTML = '<div class="loading">正在加载句子...</div>';
+      sentenceContainer.classList.remove('error');
+      
+      var requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+      };
+      
+      fetch("https://api.timelessq.com/sentence", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+          try {
+            // 尝试解析JSON响应
+            const data = JSON.parse(result);
+            let sentenceText = '';
+            let authorText = '';
+            let sentenceType = '';
+            
+            // 根据返回的数据结构提取字段
+            if (data.data && data.data.hitokoto) {
+              sentenceText = data.data.hitokoto;
+              authorText = data.data.from_who || '';
+              sentenceType = data.data.type || '';
+            } else if (data.hitokoto) {
+              sentenceText = data.hitokoto;
+              authorText = data.from_who || '';
+              sentenceType = data.type || '';
+            } else {
+              sentenceText = result;
+            }
+            
+            // 显示句子
+            let html = `<div class="sentence-item">
+                          <div class="sentence-content">${sentenceText}</div>`;
+                          
+            if (authorText) {
+              html += `<div class="author">—— ${authorText}</div>`;
+            } else {
+              html += `<div class="author">—— 匿名</div>`;
+            }
+            
+            html += `</div>`;
+            
+            sentenceContainer.innerHTML = html;
+            
+            // 更新类型信息
+            updateSentenceType(sentenceType);
+          } catch (e) {
+            // 如果不是JSON格式，则直接显示文本内容
+            sentenceContainer.innerHTML = `
+              <div class="sentence-item">
+                <div class="sentence-content">${result}</div>
+                <div class="author">—— 匿名</div>
+              </div>
+            `;
+            
+            // 更新类型信息
+            updateSentenceType('未知');
+          }
+        })
+        .catch(error => {
+          console.log('获取句子失败:', error);
+          sentenceContainer.innerHTML = '<div class="sentence-item error">获取句子失败，请稍后再试~</div>';
+        });
+    }
+    
+    // 页面加载完成后获取内容
+    document.addEventListener('DOMContentLoaded', function() {
+      fetchJokes();
+      fetchSentence();
+      
+      // 绑定刷新按钮事件
+      refreshJokeBtn.addEventListener('click', fetchJokes);
+      refreshSentenceBtn.addEventListener('click', fetchSentence);
+    });
+  </script>
+</body>
+</html>
